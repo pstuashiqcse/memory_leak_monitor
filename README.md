@@ -1,0 +1,2 @@
+# memory_leak_monitor
+It contains best practice of using AsyncTask from Activity and their inter communication. Also implement how we can efficiently use Context prevent memory leak. I have used "leakcanary" lib to trace memory leak. If we follow this simple strategy for every kind of Activity to Non-Activity communication, memory leak (context, view and reference related) will never be happen with Android Activity.
