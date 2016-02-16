@@ -28,6 +28,10 @@ public class MainActivity extends AppCompatActivity implements MyInterface {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        // start background task or network operation
+        new MyThread(MainActivity.this, new WeakReference<MyInterface>(MainActivity.this), button).execute();
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -38,15 +42,7 @@ public class MainActivity extends AppCompatActivity implements MyInterface {
         });
 
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // start background task or network operation
-        new MyThread(MainActivity.this, new WeakReference<MyInterface>(MainActivity.this), button).execute();
-
-    }
+    
 
     @Override
     public void onDestroy() {
