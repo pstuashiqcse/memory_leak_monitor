@@ -15,9 +15,9 @@ import java.lang.ref.WeakReference;
 public class MyThread extends AsyncTask<Void, Void, Void> {
 
 
-    private Context mContext;
-    private WeakReference<MyInterface> myInterface;
-    private Button button;
+    private Context mContext; // you may need context here for several purpose
+    private WeakReference<MyInterface> myInterface; // this is the trick to avoid memory leak, it will release object as early as your Activity finish
+    private Button button; // don's pass a view component to a non activity class
 
     public MyThread(Context context, WeakReference<MyInterface> myInterface, Button button) {
         this.mContext = context.getApplicationContext(); // use getApplicationContext() instead of actual context
@@ -28,6 +28,7 @@ public class MyThread extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+
         if(myInterface.get() != null) {
             myInterface.get().onTaskStart();
         }
@@ -47,6 +48,9 @@ public class MyThread extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+
+
+        // task completion callback to post data into UI
         if(myInterface.get() != null) {
             myInterface.get().onTaskCompleted();
         }

@@ -18,8 +18,6 @@ import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity implements MyInterface {
 
-
-    private MyThread myThread;
     private Button button;
 
     @Override
@@ -30,22 +28,36 @@ public class MainActivity extends AppCompatActivity implements MyInterface {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        myThread = new MyThread(MainActivity.this, new WeakReference<MyInterface>(MainActivity.this), button);
-        myThread.execute();
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // finish the activity to analyze memory leak
                 finish();
             }
         });
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // start background task or network operation
+        new MyThread(MainActivity.this, new WeakReference<MyInterface>(MainActivity.this), button).execute();
+
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        /**
+         * <trace leak>
+         * It will show a popup after close the Activity if memory leak happen with this activity
+         * nothing will be shown otherwise
+          */
+
         RefWatcher refWatcher = App.getRefWatcher(MainActivity.this);
         refWatcher.watch(MainActivity.this);
     }
